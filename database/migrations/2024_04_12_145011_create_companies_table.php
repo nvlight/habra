@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,10 +15,10 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            $table->string('title')->nullable();;
+            $table->string('title')->nullable();
             $table->string('site');
 
-            $table->dateTime('age_date')->nullable();
+            $table->date('age_date')->nullable();
             $table->bigInteger('numbers', unsigned: true)->default(0); // численность, например: 1001-5000 человек
 
             $table->string('location')->nullable(); // страна
@@ -29,8 +28,8 @@ return new class extends Migration
             // вот это уже работает
             // $table->foreignId('spokesperson')->nullable()->constrained('users')->nullOnDelete();
             // 2-й вариант
-            $table->unsignedBigInteger('spokesperson')->nullable();
-            $table->foreign('spokesperson')->references('id')->on('users')->nullOnDelete();
+            $table->unsignedBigInteger('spokesperson_id')->nullable();
+            $table->foreign('spokesperson_id')->references('id')->on('users')->nullOnDelete();
 
             $table->timestamps();
         });
