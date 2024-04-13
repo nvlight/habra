@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CompanySeeder::class,
             PostSeeder::class,
+            TagSeeder::class,
+            TaggableSeeder::class,
         ]);
     }
 }
