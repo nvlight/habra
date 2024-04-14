@@ -15,11 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // User::query()->take(1)->get();
+
         $this->call([
             CompanySeeder::class,
             PostSeeder::class,
             TagSeeder::class,
             TaggableSeeder::class,
+            CommentSeeder::class,
         ]);
     }
 }

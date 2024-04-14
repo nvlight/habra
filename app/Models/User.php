@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Company::class, 'spokesperson_id');
     }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
