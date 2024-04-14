@@ -27,13 +27,4 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function createRandomComments()
-    {
-//        $comments = Comment::factory(fake()->numberBetween(11, 21))->create();
-//        $this->comments()->saveMany($comments);
-//        return $comments;
-
-        // делает тоже самое что и верхние 3 строки!! Проверю же!
-        return Comment::factory(fake()->numberBetween(11, 21))->create(['post_id' => $this->id]);
-    }
 }

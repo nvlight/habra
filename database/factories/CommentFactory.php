@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -11,6 +12,27 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CommentFactory extends Factory
 {
+    public function configure()
+    {
+        return $this->afterCreating(function (Comment $comment){
+            if ($comment->replies()->exists()) {
+                return;
+            }
+
+            $comment->parent()->associate($this->findRandomCommentToMakeParentOf($comment))->save();
+        });
+    }
+
+    private function findRandomCommentToMakeParentOf(Comment $comment)
+    {
+        return $comment->post
+            ->comments()
+            ->doesntHave('parent')
+            ->where('id', '<>', $comment->id)
+            ->inRandomOrder()
+            ->first();
+    }
+
     /**
      * Define the model's default state.
      *

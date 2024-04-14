@@ -32,21 +32,4 @@ class Comment extends Model
         return $this->hasMany(static::class, 'parent_id');
     }
 
-    public function associateParentComment()
-    {
-        if ($this->replies()->exists()) return;
-
-        //$this->parent()->associate(static::findRandomToMakeParent())->save();
-        $this->parent()->associate($this->findRandomToMakeParent())->save();
-    }
-
-    private function findRandomToMakeParent()
-    {
-        return $this->post
-            ->comments()
-            ->doesntHave('parent')
-            ->where('id', '<>', $this->id)
-            ->inRandomOrder()
-            ->first();
-    }
 }
