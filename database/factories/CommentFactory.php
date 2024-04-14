@@ -12,27 +12,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CommentFactory extends Factory
 {
-    public function configure()
-    {
-        return $this->afterCreating(function (Comment $comment){
-            if ($comment->replies()->exists()) {
-                return;
-            }
-
-            $comment->parent()->associate($this->findRandomCommentToMakeParentOf($comment))->save();
-        });
-    }
-
-    private function findRandomCommentToMakeParentOf(Comment $comment)
-    {
-        return $comment->post
-            ->comments()
-            ->doesntHave('parent')
-            ->where('id', '<>', $comment->id)
-            ->inRandomOrder()
-            ->first();
-    }
-
     /**
      * Define the model's default state.
      *
@@ -42,8 +21,8 @@ class CommentFactory extends Factory
     {
         return [
             'text' => fake()->sentences( fake()->numberBetween(1,3), true ),
-            'user_id' => User::query()->inRandomOrder()->first(),
-            'post_id' => Post::query()->inRandomOrder()->first(),
+            'user_id' => User::query()->inRandomOrder()->first() ?? User::factory()->create()->id,
+            'post_id' => Post::query()->inRandomOrder()->first() ?? Post::factory()->create()->id,
         ];
     }
 }
