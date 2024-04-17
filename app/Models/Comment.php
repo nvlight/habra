@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Comment extends Model
 {
+    protected $fillable = [
+        'text',
+        'user_id',
+        'post_id',
+        'parent_id',
+    ];
+
     use HasFactory;
 
     public function parent(): BelongsTo
