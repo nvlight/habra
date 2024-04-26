@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DifficultyEnum;
+use App\Enums\PostStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePostRequest extends FormRequest
 {
@@ -11,7 +14,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +25,21 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'author_id' => 'required|exists:users,id',
+            'company_id' => 'nullable|exists:companies,id',
+            'title' => 'required|string',
+            'content' => 'nullable|string|max:65535',
+            'difficulty' => ['nullable', Rule::enum(DifficultyEnum::class)],
+            'read_time' => 'nullable|integer',
         ];
+    }
+
+    public function validated($key = null, $default = null)
+    {
+        $validated = parent::validated($key, $default);
+
+        $validated['status'] = PostStatusEnum::DRAFT;
+
+        return $validated;
     }
 }

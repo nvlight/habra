@@ -4,11 +4,11 @@ namespace App\Enums;
 
 use Illuminate\Support\Arr;
 
-enum DifficultyEnum
+enum DifficultyEnum: string
 {
-    const EASY = 'easy';
-    const MEDIUM = 'medium';
-    const DIFFICULT = 'difficult';
+    case EASY = 'easy';
+    case MEDIUM = 'medium';
+    case DIFFICULT = 'difficult';
 
     public static function getRandomValue()
     {

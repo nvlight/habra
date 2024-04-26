@@ -39,11 +39,6 @@ class CommentController extends Controller
         /** @var Comment $comment */
         $comment = Comment::query()->create($attributes);
 
-        // 201 created
-        //return response()->json([
-        //    'item' => $comment,
-        //], 201);
-
         return $comment;
     }
 
