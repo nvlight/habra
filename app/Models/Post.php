@@ -22,6 +22,11 @@ class Post extends Model
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
+    public function images(): MorphToMany
+    {
+        return $this->morphToMany(Image::class, 'imagable');
+    }
+
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);

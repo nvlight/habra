@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends Controller
@@ -23,27 +25,26 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCommentRequest $request): JsonResponse
+    public function store(StoreCommentRequest $request): Comment
     {
         $attributes = $request->validated();
 
-        $attributes['user_id'] = $request->user()->id;
-
+        // эти две операции были унесены в booted --> saving этой модели.
+        //$attributes['user_id'] = $request->user()->id;
         // если parent_id есть, мы берем его post_id
-        if (isset($attributes['parent_id'])){
-            $attributes['post_id'] = Comment::query()->find($attributes['parent_id'])->post_id;
-        }
+//            if (isset($attributes['parent_id'])){
+//                $attributes['post_id'] = Comment::query()->find($attributes['parent_id'])->post_id;
+//            }
 
         /** @var Comment $comment */
         $comment = Comment::query()->create($attributes);
 
-        $result = response()->json([
-            'attributes' => $attributes,
-            'success' => 1,
-            'item' => $comment,
-        ]);
+        // 201 created
+        //return response()->json([
+        //    'item' => $comment,
+        //], 201);
 
-        return $result;
+        return $comment;
     }
 
     /**
@@ -56,64 +57,27 @@ class CommentController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @throws AuthorizationException
      */
-    public function update(UpdateCommentRequest $request, Comment $comment): JsonResponse
+    public function update(UpdateCommentRequest $request, Comment $comment): void
     {
-        //auth()->loginUsingId(16);
+        // if PUT -- 204 No Content
+        // if PATCH --
 
-        // variant 1
-//        if ($request->user()->isNot($comment->user) ){
-//            throw new AuthorizationException();
-//        }
-        // variant 2
-//        abort_if($request->user()->isNot($comment->user),
-//            Response::HTTP_UNAUTHORIZED, 'Unauthorized');
-
-        if ($request->user()->isNot($comment->user)){
-            return response()->json([
-                'success' => 0,
-                'code' => Response::HTTP_UNAUTHORIZED,
-                'message' => 'Unauthorized',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+        Gate::allowIf(fn(User $user) => $comment->isOwnedBy($user));
 
         $attributes = $request->validated();
 
-        //$comment->text = $attributes['text'];
         $comment->update($attributes);
-
-        $result = response()->json([
-            'attributes' => $attributes,
-            'success' => 1,
-            'item' => $comment,
-        ]);
-
-        return $result;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment): JsonResponse
+    public function destroy(Comment $comment): void
     {
-        $delete_id = $comment->id;
-
-        if (auth()->user()->id !== $comment->user_id){
-            return response()->json([
-                'success' => 0,
-                'code' => Response::HTTP_UNAUTHORIZED,
-                'message' => 'Unauthorized',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+        Gate::allowIf(fn(User $user) => $comment->isOwnedBy($user));
 
         $comment->delete();
-
-        $result = response()->json([
-            'delete_id' => $delete_id,
-            'success' => 1,
-        ]);
-
-        return $result;
     }
+
 }

@@ -25,4 +25,13 @@ class CommentFactory extends Factory
             'post_id' => Post::query()->inRandomOrder()->first() ?? Post::factory()->create()->id,
         ];
     }
+
+    public function reply()
+    {
+        return $this->state(function (){
+            return [
+                'parent_id' => Post::query()->inRandomOrder()->first() ?: Comment::factory(),
+            ];
+        });
+    }
 }

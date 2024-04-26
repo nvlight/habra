@@ -19,6 +19,17 @@ class Comment extends Model
 
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saving(function (Comment $comment){
+            $comment->user_id = $comment->user_id ?: auth()->id();
+
+            if ($comment->parent_id){
+                $comment->post_id = Comment::query()->find($comment->parent_id)->post_id;
+            }
+        });
+    }
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(static::class);
@@ -32,6 +43,11 @@ class Comment extends Model
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
+    }
+
+    public function isOwnedBy(User $user): bool
+    {
+        return $this->user_id === $user->id;
     }
 
 }
