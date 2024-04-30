@@ -12,12 +12,6 @@ enum DifficultyEnum: string
 
     public static function getRandomValue()
     {
-        $values = [
-            DifficultyEnum::EASY,
-            DifficultyEnum::MEDIUM,
-            DifficultyEnum::DIFFICULT,
-        ];
-
-        return Arr::random($values);
+        return Arr::random(self::cases())->value;
     }
 }

@@ -13,13 +13,7 @@ enum PostStatusEnum: string
 
     public static function getRandomValue()
     {
-        $values = [
-            PostStatusEnum::DRAFT,
-            PostStatusEnum::PUBLISHED,
-            PostStatusEnum::REJECTED,
-            PostStatusEnum::ON_INSPECTION,
-        ];
-
-        return Arr::random($values);
+        return Arr::random(self::cases())->value;
     }
+
 }
