@@ -15,9 +15,9 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Collection
+    public function index(): array
     {
-        return Post::all();
+        return PostResource::collection(Post::all())->resolve();
     }
 
     /**

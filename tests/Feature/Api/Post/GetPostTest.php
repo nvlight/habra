@@ -4,10 +4,12 @@ namespace Tests\Feature\Api\Post;
 
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GetPostTest extends TestCase
 {
+    use RefreshDatabase;
     private Post $post;
 
     protected function setUp(): void
@@ -32,8 +34,11 @@ class GetPostTest extends TestCase
 
         $response->assertOk();
 
-        //dump($response); это возвращает status и difficulty как Enum и проверка со строкой не проходит.
-        //dd($this->post);
+//        $response->dd();
+//        $response->ddHeaders();
+//        $response->ddSession();
+
+        $response->assertJsonIsObject();
 
         $response->assertJsonStructure([
             'author',
@@ -62,6 +67,5 @@ class GetPostTest extends TestCase
             'likes' => $this->post->likes,
             'status' => $this->post->status,
         ]);
-
     }
 }
