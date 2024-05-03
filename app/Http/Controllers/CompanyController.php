@@ -2,49 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCompanyRequest;
-use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Requests\Company\StoreCompanyRequest;
+use App\Http\Requests\Company\UpdateCompanyRequest;
+use App\Http\Resources\CompanyResource;
 use App\Models\Company;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class CompanyController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): array
     {
-        //
+        return CompanyResource::collection(Company::all())->resolve();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCompanyRequest $request)
+    public function store(StoreCompanyRequest $request): Company
     {
-        //
+        $attributes = $request->validated();
+
+        /** @var Company $company */
+        $company = Company::query()->create($attributes);
+
+        return $company;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Company $company)
+    public function show(Company $company): array
     {
-        //
+        return (new CompanyResource($company))->resolve();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCompanyRequest $request, Company $company)
+    public function update(UpdateCompanyRequest $request, Company $company): void
     {
-        //
+        Gate::allowIf(fn(User $user) => $company->isOwnedBy($user));
+
+        $attributes = $request->validated();
+
+        $company->update($attributes);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company $company)
+    public function destroy(Company $company): void
     {
-        //
+        Gate::allowIf(fn(User $user) => $company->isOwnedBy($user));
+
+        $company->delete();
     }
 }

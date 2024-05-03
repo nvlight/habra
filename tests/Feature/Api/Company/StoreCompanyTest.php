@@ -1,19 +1,16 @@
 <?php
 
-namespace Feature\Api\Post;
+namespace Feature\Api\Company;
 
-use App\Models\Post;
+use App\Models\Company;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class StorePostTest extends TestCase
+class StoreCompanyTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
-    private Post $post;
+
+    private Company $company;
 
     protected function setUp(): void
     {
@@ -25,18 +22,18 @@ class StorePostTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_store_post(): void
+    public function test_store_company(): void
     {
-        // sail artisan test --filter=StorePostTest
+        // sail artisan test --filter=StoreCompanyTest
 
-        $this->post = Post::factory()->make();
-        $this->post->author_id = $this->user->id;
+        $this->company = Company::factory()->make();
+        $this->company->spokesperson_id = $this->user->id;
 
         // вот эта штука покажет дополнительные ошибки!
         $this->withoutExceptionHandling();
 
         $response = $this->actingAs($this->user)
-            ->post(route('post.store'), $this->post->getAttributes())
+            ->post(route('company.store'), $this->company->getAttributes())
             //->assertSessionHasNoErrors() // эта штука также выдает ошибку!
         ;
 

@@ -21,7 +21,7 @@ class CompanyFactory extends Factory
             'name' => fake()->words(fake()->numberBetween(1,5), true),
             'title' => fake()->words(fake()->numberBetween(3,9), true),
             'site' => fake()->domainName(),
-            'age_date' => fake()->date('Y_m_d'), // random date
+            'age_date' => fake()->date('Y-m-d'), // random date
             'numbers' => fake()->numberBetween(1,10000),
             'location' => 'Moskow', // later change this
             'spokesperson_id' => null, // later change this too

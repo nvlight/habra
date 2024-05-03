@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Post;
+namespace Feature\Api\Post;
 
 use App\Models\Post;
 use App\Models\User;
@@ -27,7 +27,7 @@ class UpdatePostTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_example(): void
+    public function test_update_post(): void
     {
         // sail artisan test --filter=UpdatePostTest
         $post = Post::factory()->make();
