@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,9 +15,9 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Collection
+    public function index(): array
     {
-        return Comment::all();
+        return CommentResource::collection(Comment::all())->resolve();
     }
 
     /**
@@ -42,9 +43,9 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Comment $comment): Comment
+    public function show(Comment $comment): array
     {
-        return $comment;
+        return (new CommentResource($comment))->resolve();
     }
 
     /**

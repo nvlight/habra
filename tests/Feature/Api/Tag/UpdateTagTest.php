@@ -1,37 +1,35 @@
 <?php
 
-namespace Feature\Api\Company;
+namespace Feature\Api\Tag;
 
 use App\Models\Company;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class UpdateCompanyTest extends TestCase
+class UpdateTagTest extends TestCase
 {
     use RefreshDatabase;
 
-    private Company $company;
+    private Tag $tag;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->user = User::factory()->create();
-
-        $this->company = Company::factory()
-            ->for($this->user, 'spokesperson')
-            ->create();
+        $this->tag = Tag::factory()->create();
     }
 
     /**
      * A basic feature test example.
      */
-    public function test_update_company(): void
+    public function test_update_tag(): void
     {
-        // sail artisan test --filter=UpdateCompanyTest
+        // sail artisan test --filter=UpdateTagTest
 
-        $company = Company::factory()->make();
+        $tag = Tag::factory()->make();
 
         // вот эта штука покажет дополнительные ошибки!
         $this->withoutExceptionHandling();
@@ -42,9 +40,7 @@ class UpdateCompanyTest extends TestCase
         //;
 
         // это выдает 422 ошибку, но непонятно где именно ошибка
-        $response = $this
-            ->actingAs($this->user)
-            ->json('put', route('company.update', $this->company), $company->getAttributes());
+        $response = $this->json('put', route('tag.update', $this->tag), $tag->getAttributes());
 
         //$response->dump();
         $response->assertOk();
