@@ -19,13 +19,13 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        $exceptions->render(function (CompanyNotFoundException $e) {
-            return responseFailed(getMessage('company not found'), 404);
-        });
-
-        $exceptions->render(function (NotFoundHttpException $e) {
-            return responseFailed(getMessage('model_not_found'), 404);
-        });
+//        $exceptions->render(function (CompanyNotFoundException $e) {
+//            return responseFailed(getMessage('company not found'), 404);
+//        });
+//
+//        $exceptions->render(function (NotFoundHttpException $e) {
+//            return responseFailed(getMessage('model_not_found'), 404);
+//        });
 
 
     })->create();

@@ -14,6 +14,6 @@ class ImageSeeder extends Seeder
     public function run(): void
     {
         // sail artisan db:seed --class=ImageSeeder
-        Image::factory(random_int(15,29))->create();
+        Image::factory(random_int(3,5))->create();
     }
 }

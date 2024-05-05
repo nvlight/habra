@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
-use App\Http\Resources\TagResource;
+use App\Http\Resources\Resources\TagResource;
 use App\Models\Tag;
-use App\Models\User;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Gate;
 
 class TagController extends Controller
 {

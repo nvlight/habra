@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use App\Http\Resources\PostResource;
+use App\Http\Resources\Resources\PostResource;
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller

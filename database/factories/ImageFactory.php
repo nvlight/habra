@@ -30,23 +30,29 @@ class ImageFactory extends Factory
         'jpg', 'jpeg', 'png', 'bmp', 'gif', 'svg', 'webp',
     ];
 
-    protected function getImageExtension($ext='jpg')
+    protected function getImageExtension($ext = 'jpg')
     {
         return $ext;
     }
 
-    protected function getRandomImageExtension($ext='jpg'): string
+    protected function getRandomImageExtension($ext = 'jpg'): string
     {
 
         return Arr::random($this->extensions);
     }
 
-    protected function getImagePrefix($prefix='image_'): string
+    protected function getImagePathPrefix($prefix = 'images'): string
     {
         return $prefix;
     }
 
-    protected function getImageDimensions($dim='150x150'): string
+    protected function getImagePrefix($prefix = 'image_'): string
+    {
+        return $prefix;
+    }
+
+
+    protected function getImageDimensions($dim = '150x150'): string
     {
         return $dim;
     }
@@ -59,12 +65,18 @@ class ImageFactory extends Factory
     private function saveImageToFile(): string
     {
         $url = 'https://via.placeholder.com/' . $this->getImageDimensions();
-        $imageData = file_get_contents($url); // Генерируем случайное изображение
 
-        $fileName =  $this->getImagePrefix() . $this->getUnigueImageName() . '.' . $this->getImageExtension(); // Генерируем уникальное имя файла
+        // Генерируем случайное изображение
+        $imageData = file_get_contents($url);
 
-        Storage::disk('public')->put($fileName, $imageData); // Сохраняем изображение в публичной директории
+        // Генерируем уникальное имя файла
+        $fileName = $this->getImagePathPrefix() . '/'
+            . $this->getImagePrefix()
+            . $this->getUnigueImageName() . '.'
+            . $this->getImageExtension();
 
-        return 'storage/' . $fileName; // Возвращаем путь к сохраненному файлу
+        Storage::disk('public')->put($fileName, $imageData);
+
+        return $fileName;
     }
 }

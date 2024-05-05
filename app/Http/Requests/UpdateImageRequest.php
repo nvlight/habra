@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
 
 class UpdateImageRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateImageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,17 @@ class UpdateImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string',
+            'src' => 'required|image',
         ];
     }
+
+    public function prepareForValidation(): void
+    {
+        $title = preg_replace("/[\t\s\/\\\]+/", "-", trim($this->title));
+        $this->replace([
+            'title' => $title,
+        ]);
+    }
+
 }
