@@ -26,4 +26,12 @@ class StoreImageRequest extends FormRequest
             'src' => 'required|image',
         ];
     }
+
+    public function prepareForValidation(): void
+    {
+        $title = preg_replace("/[\t\s\/\\\]+/", "-", trim($this->title));
+        $this->replace([
+            'title' => $title,
+        ]);
+    }
 }

@@ -35,5 +35,10 @@ class StoreTagTest extends TestCase
         $response->assertCreated();
 
         $response->assertJsonIsObject();
+
+        $this->assertDatabaseHas(
+            'tags',
+            $tag->getAttributes(),
+        );
     }
 }

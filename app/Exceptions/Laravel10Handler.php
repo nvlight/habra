@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
-class Handler extends ExceptionHandler
+class Laravel10Handler extends ExceptionHandler
 {
     public function __construct()
     {

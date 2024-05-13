@@ -6,9 +6,12 @@ use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateImageRequest;
 use App\Http\Resources\Resources\ImageResource;
 use App\Models\Image;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ImageController extends Controller
 {
@@ -30,7 +33,6 @@ class ImageController extends Controller
         $img = $request->file('src') ?: null;
         $disk = 'public';
         $imgPrefix = 'images';
-        $imgUrl = '';
 
         if ($img){
             try {
@@ -69,22 +71,18 @@ class ImageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateImageRequest $request, Image $image)
+    public function update(UpdateImageRequest $request, Image $image): JsonResponse
     {
         $attributes = $request->validated();
-        //return $attributes;
 
         $img = $request->file('src') ?: null;
         $disk = 'public';
         $imgPrefix = 'images';
-        $imgUrl = '';
 
         if ($img){
             try {
                 // first delete old image
-                if (Storage::disk($disk)->exists($image->src)){
-                    Storage::disk($disk)->delete($image->src);
-                }
+                $etalonImageSrc = $image->src;
 
                 $imgName =  $imgPrefix . '/' . $attributes['title'] . '.' . $img->extension();
 
@@ -93,17 +91,22 @@ class ImageController extends Controller
                 Storage::disk($disk)->putFileAs($img, $imgName);
 
                 $attributes['src'] = $imgName;
-                $imgUrl = Storage::disk($disk)->url($attributes['src']);
+                Storage::disk($disk)->url($attributes['src']);
+
+                // delete old image then
+                if (Storage::disk($disk)->exists($etalonImageSrc)){
+                    Storage::disk($disk)->delete($etalonImageSrc);
+                }
             }catch (\Throwable $exception){
                 return response()
                     ->json([
-                        'error with file creating',
+                        'error with file updating',
                         $exception->getMessage(),
                     ], 422);
             }
         }
 
-        Image::query()->update($attributes);
+        $image->update($attributes);
 
         $imageResource = (new ImageResource($image))->resolve();
 
@@ -114,7 +117,7 @@ class ImageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Image $image)
+    public function destroy(Image $image):void
     {
         $disk = 'public';
 
@@ -140,4 +143,5 @@ class ImageController extends Controller
             '$exists' => $exists,
         ]);
     }
+
 }

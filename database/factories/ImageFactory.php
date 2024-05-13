@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -19,9 +20,13 @@ class ImageFactory extends Factory
      */
     public function definition(): array
     {
+        $createdImg = $this->img_create();
+        Log::info($createdImg);
+
         return [
             'title' => fake()->sentence,
-            'src' => $this->saveImageToFile(),
+            //'src' => $this->saveImageToFile(),
+            'src' => $createdImg,
         ];
     }
 
@@ -78,5 +83,36 @@ class ImageFactory extends Factory
         Storage::disk('public')->put($fileName, $imageData);
 
         return $fileName;
+    }
+
+    function img_create($path='images', $extension='png', $width=300, $height=200)
+    {
+        $imageRandomName = "{$path}/" .  time() . '-' . Str::random(11) . '.' . $extension;
+        $imageFullName = "app/public/" . $imageRandomName;
+        // Определяем путь для сохранения изображения
+        $filePath = storage_path($imageFullName);
+
+        // Создаем новое изображение
+        $image = imagecreatetruecolor($width, $height);
+
+        // Сохраняем изображение в указанном расширении и пути
+        switch ($extension) {
+            case 'png':
+                imagepng($image, $filePath);
+                break;
+            case 'jpeg':
+            case 'jpg':
+                imagejpeg($image, $filePath);
+                break;
+            case 'gif':
+                imagegif($image, $filePath);
+                break;
+            // Другие форматы изображений
+        }
+
+        // Освобождаем память, уничтожая изображение
+        imagedestroy($image);
+
+        return $imageRandomName; // Возвращаем путь к сохраненному изображению
     }
 }

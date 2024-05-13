@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class StoreImageTest extends TestCase
 {
-    use RefreshDatabase;
+//    use RefreshDatabase;
 
     /**
      * A basic feature test example.
@@ -25,15 +25,28 @@ class StoreImageTest extends TestCase
 
         $this->withoutExceptionHandling();
 
-        $disk = 'public';
         $attributes = $image->getAttributes();
 
-        //$attributes['src'] = Storage::disk($disk)->get($attributes['src']);
-        $attributes['src'] = UploadedFile::fake()->image('some_1.png');
+        $disk = 'public';
+        $etalonImgName = $attributes['src'];
+
+        // Путь к вашему сохраненному файлу
+        $filePath = Storage::disk($disk)->path($attributes['src']);
+        // Получение имени файла из пути
+        $fileName = pathinfo($filePath, PATHINFO_BASENAME);
+        // Определение MIME-типа файла
+        $mimeType = Storage::mimeType($filePath);
+        // Создание объекта UploadedFile с вашим сохраненным файлом
+        $customFile = new UploadedFile($filePath, $fileName, $mimeType, null, true);
+        // Использование объекта UploadedFile в вашем коде
+        $attributes['src'] = $customFile;
+
+//        $createdImg = Storage::disk($disk)->path($etalonImgName);
+//        $attributes['src'] = new File($createdImg);
+//        dd($attributes['src']);
 
         $response = $this->post(route('image.store'), $attributes);
 
-        //$response->dump();
         $response->assertCreated();
 
         $response->assertJsonIsObject();
@@ -44,8 +57,11 @@ class StoreImageTest extends TestCase
             "src",
         ]);
 
-//        if (Storage::disk($disk)->exists($attributes['src'])) {
-//            Storage::disk($disk)->delete($attributes['src']);
-//        }
+        if (Storage::disk($disk)->exists($etalonImgName)) {
+            Storage::disk($disk)->delete($etalonImgName);
+        }
+        if (Storage::disk($disk)->exists($response->original['src'])) {
+            Storage::disk($disk)->delete($response->original['src']);
+        }
     }
 }

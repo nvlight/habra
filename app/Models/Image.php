@@ -13,4 +13,5 @@ class Image extends Model
         'title',
         'src',
     ];
+
 }

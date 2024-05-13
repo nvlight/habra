@@ -19,5 +19,5 @@ function responseFailed(?string $message = null, int $code = 400 ): JsonResponse
 
 function getMessage(string $code = ''): ?string
 {
-    return __("messages.$code");
+    return __("$code");
 }

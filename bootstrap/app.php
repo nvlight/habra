@@ -1,10 +1,15 @@
 <?php
 
 use App\Exceptions\Company\CompanyNotFoundException;
+use App\Exceptions\ExceptionHandler;
+use App\Exceptions\Laravel11Handler;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -17,15 +22,4 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-
-//        $exceptions->render(function (CompanyNotFoundException $e) {
-//            return responseFailed(getMessage('company not found'), 404);
-//        });
-//
-//        $exceptions->render(function (NotFoundHttpException $e) {
-//            return responseFailed(getMessage('model_not_found'), 404);
-//        });
-
-
-    })->create();
+    ->withExceptions(new ExceptionHandler())->create();

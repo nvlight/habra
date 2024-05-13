@@ -18,11 +18,9 @@ class CompanyNotFoundException extends Exception
     /**
      * Report the exception.
      */
-    public function report(): JsonResponse
+    public function report(): void
     {
-        return response()->json([
-            'its very funny 0',
-        ]);
+        Log::info('Company not found');
     }
 
     /**
@@ -30,8 +28,6 @@ class CompanyNotFoundException extends Exception
      */
     public function render(Request $request): JsonResponse
     {
-        return response()->json([
-           'its very funny',
-        ]);
+        return responseFailed(getMessage('company not found'), 404);
     }
 }

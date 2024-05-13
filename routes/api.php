@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('img_files', [ImageController::class, 'img_files']);
 Route::post('img_exists', [ImageController::class, 'img_exists']);
+Route::post('img_create', [ImageController::class, 'img_create']);
 
 Route::apiResources([
     'comment' => CommentController::class,
