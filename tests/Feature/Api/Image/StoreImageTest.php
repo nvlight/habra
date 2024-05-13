@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class StoreImageTest extends TestCase
 {
-//    use RefreshDatabase;
+    use RefreshDatabase;
 
     /**
      * A basic feature test example.
@@ -28,7 +28,6 @@ class StoreImageTest extends TestCase
         $attributes = $image->getAttributes();
 
         $disk = 'public';
-        $etalonImgName = $attributes['src'];
 
         // Путь к вашему сохраненному файлу
         $filePath = Storage::disk($disk)->path($attributes['src']);
@@ -40,10 +39,6 @@ class StoreImageTest extends TestCase
         $customFile = new UploadedFile($filePath, $fileName, $mimeType, null, true);
         // Использование объекта UploadedFile в вашем коде
         $attributes['src'] = $customFile;
-
-//        $createdImg = Storage::disk($disk)->path($etalonImgName);
-//        $attributes['src'] = new File($createdImg);
-//        dd($attributes['src']);
 
         $response = $this->post(route('image.store'), $attributes);
 
@@ -57,9 +52,6 @@ class StoreImageTest extends TestCase
             "src",
         ]);
 
-        if (Storage::disk($disk)->exists($etalonImgName)) {
-            Storage::disk($disk)->delete($etalonImgName);
-        }
         if (Storage::disk($disk)->exists($response->original['src'])) {
             Storage::disk($disk)->delete($response->original['src']);
         }

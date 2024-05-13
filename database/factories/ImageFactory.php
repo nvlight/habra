@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -87,6 +88,10 @@ class ImageFactory extends Factory
 
     function img_create($path='images', $extension='png', $width=300, $height=200)
     {
+        if (!Storage::disk('public')->exists($path)){
+            Storage::disk('public')->makeDirectory($path);
+        }
+
         $imageRandomName = "{$path}/" .  time() . '-' . Str::random(11) . '.' . $extension;
         $imageFullName = "app/public/" . $imageRandomName;
         // Определяем путь для сохранения изображения

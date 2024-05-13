@@ -29,6 +29,8 @@ class UpdateImageTest extends TestCase
 
         //$attributes['src'] = UploadedFile::fake()->image('some_2.png');
 
+        Storage::disk('public')->copy($this->attributes['src'], 'copy' . $this->attributes['src']);
+
         // Путь к вашему сохраненному файлу
         $filePath = Storage::disk($this->disk)->path($this->attributes['src']);
         // Получение имени файла из пути
@@ -52,12 +54,15 @@ class UpdateImageTest extends TestCase
 
         $this->withoutExceptionHandling();
 
-        $etalonImgName = $this->attributes['src'];
+        $etalonImgName = 'copyimages/' . pathinfo($this->attributes['src'], PATHINFO_BASENAME);
         $this->attributes['title'] = 'hoho ho!!';
-        //dump($this->attributes['src']);
+
+        //$imgSize1 = Storage::disk('public')->size($this->image->src);
 
         $response = $this->put(route('image.update', $this->image), $this->attributes);
-        //$response->dd();
+
+        $imgSize1 = Storage::disk('public')->size($etalonImgName);
+        $imgSize2 = Storage::disk('public')->size($response->baseResponse->original['src']);
 
         $response->assertOk();
 
@@ -68,6 +73,8 @@ class UpdateImageTest extends TestCase
             "title",
             "src",
         ]);
+
+        $this->assertTrue($imgSize1 === $imgSize2);
 
         if (Storage::disk($this->disk)->exists($etalonImgName)) {
             Storage::disk($this->disk)->delete($etalonImgName);
