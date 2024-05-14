@@ -12,6 +12,7 @@ class Taggable extends Model
     //protected $table = 'taggable';
 
     protected $fillable = [
+        'tag_id',
         'taggable_id',
         'taggable_type',
     ];

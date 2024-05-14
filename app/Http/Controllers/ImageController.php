@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateImageRequest;
-use App\Http\Resources\Resources\ImageResource;
+use App\Http\Resources\ImageResource;
 use App\Models\Image;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ImageController extends Controller
 {
+    private string $disk = 'public';
+    private string $imagePrefix = 'images';
+
     /**
      * Display a listing of the resource.
      */
@@ -31,20 +31,17 @@ class ImageController extends Controller
         $attributes = $request->validated();
 
         $img = $request->file('src') ?: null;
-        $disk = 'public';
-        $imgPrefix = 'images';
 
         if ($img){
             try {
-                $title = preg_replace("/[\t\s]+/", " ", trim($attributes['title']));
-                $imgName =  $imgPrefix . '/' . $title . '.' . $img->extension();
+                $imgName =  $this->imagePrefix . '/' . $attributes['title'] . '.' . $img->extension();
 
                 // сработает каждый из них
                 // $img->storeAs('',  $imgName, $disk);
-                Storage::disk($disk)->putFileAs($img, $imgName);
+                Storage::disk($this->disk)->putFileAs($img, $imgName);
 
                 $attributes['src'] = $imgName;
-                Storage::disk($disk)->url($attributes['src']);
+                Storage::disk($this->disk)->url($attributes['src']);
             }catch (\Throwable $exception){
                 return response()
                     ->json(['error with file creating'], 422);
@@ -76,26 +73,24 @@ class ImageController extends Controller
         $attributes = $request->validated();
 
         $img = $request->file('src') ?: null;
-        $disk = 'public';
-        $imgPrefix = 'images';
 
         if ($img){
             try {
                 // first delete old image
                 $etalonImageSrc = $image->src;
 
-                $imgName =  $imgPrefix . '/' . $attributes['title'] . '.' . $img->extension();
+                $imgName =  $this->imagePrefix . '/' . $attributes['title'] . '.' . $img->extension();
 
                 // сработает каждый из них
                 // $img->storeAs('',  $imgName, $disk);
-                Storage::disk($disk)->putFileAs($img, $imgName);
+                Storage::disk($this->disk)->putFileAs($img, $imgName);
 
                 $attributes['src'] = $imgName;
-                Storage::disk($disk)->url($attributes['src']);
+                Storage::disk($this->disk)->url($attributes['src']);
 
                 // delete old image then
-                if (Storage::disk($disk)->exists($etalonImageSrc)){
-                    Storage::disk($disk)->delete($etalonImageSrc);
+                if (Storage::disk($this->disk)->exists($etalonImageSrc)){
+                    Storage::disk($this->disk)->delete($etalonImageSrc);
                 }
             }catch (\Throwable $exception){
                 return response()

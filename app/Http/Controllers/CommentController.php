@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
-use App\Http\Resources\Resources\CommentResource;
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;

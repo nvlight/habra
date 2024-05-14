@@ -11,7 +11,7 @@ class StoreTaggableRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreTaggableRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'tag_id' => 'required|exists:tags,id',
+            'taggable_id' => 'required',
+            'taggable_type' => 'required|string',
         ];
     }
 }

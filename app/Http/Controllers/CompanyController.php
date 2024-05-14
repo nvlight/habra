@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\Company\CompanyNotFoundException;
 use App\Http\Requests\Company\StoreCompanyRequest;
 use App\Http\Requests\Company\UpdateCompanyRequest;
-use App\Http\Resources\Resources\CompanyResource;
+use App\Http\Resources\CompanyResource;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;

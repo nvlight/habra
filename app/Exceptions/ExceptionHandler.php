@@ -30,7 +30,11 @@ class ExceptionHandler
     protected function companyNotFound(BaseExceptions $exceptions):void
     {
         $exceptions->render(function (NotFoundHttpException $e) {
-            $previous = $e->getPrevious();
+
+            if (! $previous = $e->getPrevious()){
+                return;
+            }
+
             $reflectionProperty = new ReflectionProperty($previous, 'model');
             $model = $reflectionProperty->getValue($previous);
 
