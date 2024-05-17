@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ImagableController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
@@ -24,6 +25,7 @@ Route::apiResources([
     'tag' => TagController::class,
     'image' => ImageController::class,
     'taggable' => TaggableController::class,
+    'imagable' => ImagableController::class,
 ]);
 
 

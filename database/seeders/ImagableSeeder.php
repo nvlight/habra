@@ -17,7 +17,7 @@ class ImagableSeeder extends Seeder
     {
         // sail artisan db:seed --class=ImagableSeeder
         $postsCount = Post::all()->count();
-        $imagesCount  = Image::all()->count();
+        $imagesCount = Image::all()->count();
 
         if (!$postsCount && !$imagesCount) {
             return;
