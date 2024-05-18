@@ -57,8 +57,8 @@ class ImagableController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Imagable $imagable)
+    public function destroy(Imagable $imagable): void
     {
-        //
+        $imagable->delete();
     }
 }
