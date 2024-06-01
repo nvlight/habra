@@ -11,7 +11,11 @@ class UpdateCompanyTest extends TestCase
 {
     use RefreshDatabase;
 
-    private Company $company;
+    private string $routePrefix = 'company.';
+    private Company $existingCompany;
+    private Company $newCompany;
+
+    private User $user;
 
     protected function setUp(): void
     {
@@ -19,7 +23,11 @@ class UpdateCompanyTest extends TestCase
 
         $this->user = User::factory()->create();
 
-        $this->company = Company::factory()
+        $this->existingCompany = Company::factory()
+            ->for($this->user, 'spokesperson')
+            ->create();
+
+        $this->newCompany = Company::factory()
             ->for($this->user, 'spokesperson')
             ->create();
     }
@@ -31,9 +39,6 @@ class UpdateCompanyTest extends TestCase
     {
         // sail artisan test --filter=UpdateCompanyTest
 
-        $company = Company::factory()->make();
-
-        // вот эта штука покажет дополнительные ошибки!
         $this->withoutExceptionHandling();
 
         //$response = $this->actingAs($this->user)
@@ -41,12 +46,27 @@ class UpdateCompanyTest extends TestCase
         //    //->assertSessionHasNoErrors() // эта штука также выдает ошибку!
         //;
 
-        // это выдает 422 ошибку, но непонятно где именно ошибка
-        $response = $this
-            ->actingAs($this->user)
-            ->json('put', route('company.update', $this->company), $company->getAttributes());
+//        $response = $this
+//            ->actingAs($this->user)
+//            ->json('put', route('company.update', $this->company), $company->getAttributes());
 
-        //$response->dump();
+        $response = $this->actingAs($this->user)
+            ->putJson(
+                route($this->routePrefix . 'update', $this->existingCompany),
+                $this->newCompany->toArray()
+            );
+
+        $response->assertJson([
+            'id' => $this->existingCompany->id,
+            'name' => $this->newCompany->name,
+            'title' => $this->newCompany->title,
+        ]);
+
+        $this->assertDatabaseHas(
+            'companies',
+            $this->newCompany->toArray(),
+        );
+
         $response->assertOk();
     }
 }

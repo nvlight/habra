@@ -7,6 +7,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaggableController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,8 @@ Route::apiResources([
     'imagable' => ImagableController::class,
 ]);
 
-
+Route::group(['prefix' => 'user', 'middleware' => 'auth:sanctum', 'as' => 'user.'], function (){
+    Route::post('login', [UserController::class, 'login'])->name('login');
+    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+    Route::post('chich', [UserController::class, 'chich'])->name('chich');
+});

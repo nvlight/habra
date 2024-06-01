@@ -40,5 +40,7 @@ class DestroyCompanyTest extends TestCase
             ->delete(route('company.destroy', $this->company));
 
         $response->assertOk();
+
+        $this->assertDatabaseMissing('companies', $this->company->toArray());
     }
 }

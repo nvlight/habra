@@ -4,13 +4,13 @@ namespace Feature\Api\Company;
 
 use App\Models\Company;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class StoreCompanyTest extends TestCase
 {
+    use RefreshDatabase;
     private User $user;
-
-    private Company $company;
 
     protected function setUp(): void
     {
@@ -26,14 +26,14 @@ class StoreCompanyTest extends TestCase
     {
         // sail artisan test --filter=StoreCompanyTest
 
-        $this->company = Company::factory()->make();
-        $this->company->spokesperson_id = $this->user->id;
+        $company = Company::factory()->make();
+        $company->spokesperson_id = $this->user->id;
 
         // вот эта штука покажет дополнительные ошибки!
         $this->withoutExceptionHandling();
 
         $response = $this->actingAs($this->user)
-            ->post(route('company.store'), $this->company->getAttributes())
+            ->post(route('company.store'), $company->getAttributes())
             //->assertSessionHasNoErrors() // эта штука также выдает ошибку!
         ;
 
@@ -41,9 +41,17 @@ class StoreCompanyTest extends TestCase
         //$response = $this->actingAs($this->user)
         //    ->json('POST', route('post.store'), $this->post->getAttributes());
 
-        //$response->dump();
         $response->assertCreated();
 
         $response->assertJsonIsObject();
+
+        $response->assertJson([
+            'name' => $company->name,
+        ]);
+
+        $this->assertDatabaseHas(
+            'companies',
+            $company->toArray()
+        );
     }
 }

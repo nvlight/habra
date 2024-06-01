@@ -44,13 +44,15 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCompanyRequest $request, Company $company): void
+    public function update(UpdateCompanyRequest $request, Company $company): Company
     {
-        Gate::allowIf(fn(User $user) => $company->isOwnedBy($user));
+        //Gate::allowIf(fn(User $user) => $company->isOwnedBy($user));
 
         $attributes = $request->validated();
 
-        $company->update($attributes);
+        ($company)->update($attributes);
+
+        return $company;
     }
 
     /**

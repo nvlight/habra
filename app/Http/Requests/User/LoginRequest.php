@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Company;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCompanyRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +22,8 @@ class StoreCompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:155',
-            'spokesperson_id' => 'required|integer|exists:users,id',
-            'title' => 'nullable|string',
-            'site' => 'required|string',
-            'numbers' => 'nullable|integer',
-            'location' => 'nullable|string',
-            'age_date' => 'nullable|date',
+            'email' => ['required', 'email', 'exists:users'],
+            'password' => ['required', 'confirmed'],
         ];
     }
 }
